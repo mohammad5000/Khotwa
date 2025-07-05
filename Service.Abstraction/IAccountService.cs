@@ -1,4 +1,5 @@
-﻿using Shared.DTO.ApplicationUser;
+﻿using Shared.DTO.Account;
+using Shared.DTO.ApplicationUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Service.Abstraction
 {
     public interface IAccountService
     {
+        Task<bool> CreateRoleAsync(string roleName);
+        Task<bool> RegisterUserAsync(RegisterDto dto);
         Task<string> GetUserNameAsync(string userId);
         Task<string> GetUserEmailAsync(string userId);
         Task<ApplicationUserDto> GetUserByIdAsync(string userId);

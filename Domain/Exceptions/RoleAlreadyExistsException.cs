@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class UserNotFoundException : NotFoundException
+    public class RoleAlreadyExistsException : ConflictException
     {
-        public UserNotFoundException(string userId)
-            : base($"User with ID '{userId}' was not found.") { }
+        public RoleAlreadyExistsException(string roleName)
+            : base($"Role '{roleName}' already exists.") { }
     }
 }

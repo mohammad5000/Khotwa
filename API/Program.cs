@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using Service.Abstraction;
+using Service.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +35,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
+    await RoleSeeder.SeedAsync(accountService);
+}
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
