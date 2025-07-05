@@ -79,7 +79,7 @@ namespace Service
             {
                 Id = user.Id,
                 Email = user.Email,
-                UserName = user.UserName
+                //UserName = user.UserName
             };
         }
 
