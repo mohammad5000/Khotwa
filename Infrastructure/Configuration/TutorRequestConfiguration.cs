@@ -13,8 +13,8 @@ namespace Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<TutorRequest> builder)
         {
-            
-        
+            builder.Property(p => p.Budget).HasColumnType("decimal(18,2)");
+
             builder.HasOne(tr => tr.Customer)
                 .WithMany() 
                 .HasForeignKey(tr => tr.CustomerId)
@@ -24,10 +24,12 @@ namespace Infrastructure.Configuration
                 .WithMany()
                 .HasForeignKey(tr => tr.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
-        
 
+            builder.Property(tr => tr.Status)
+                   .HasConversion<string>() 
+                   .IsRequired();
 
-        builder.Property(p => p.Budget).HasColumnType("decimal(18,2)");
+           
         }
     }
 }
