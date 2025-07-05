@@ -10,6 +10,9 @@ namespace Infrastructure.persistence.Data
     public class DataContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Category> Categories { get; set; }
+        public DbSet<TutorRequest> TutorRequests { get; set; }
+        public DbSet<Demo> Demos { get; set; }
+
 
         public DataContext(DbContextOptions options) : base(options)
         {
