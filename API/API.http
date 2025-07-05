@@ -1,0 +1,6 @@
+@API_HostAddress = http://localhost:5177
+
+POST {{API_HostAddress}}/api/category
+Accept: application/json
+
+###
