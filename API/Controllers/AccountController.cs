@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Service;
 using Service.Abstraction;
 using Shared.DTO.Account;
+using Shared.DTO.ApplicationUser;
 
 namespace API.Controllers
 {
@@ -31,10 +32,9 @@ namespace API.Controllers
         }
         // Example method for user login
         [HttpPost("login")]
-        public IActionResult Login([FromBody] object loginDto)
+        public async Task<ActionResult<ApplicationUserDto>> Login(LoginDto loginDto)
         {
-            // Logic for user login
-            return Ok("User logged in successfully.");
+            return await _accountService.Login(loginDto);
         }
     }
 }

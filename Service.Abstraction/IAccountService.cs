@@ -12,15 +12,16 @@ namespace Service.Abstraction
     {
         Task<bool> CreateRoleAsync(string roleName);
         Task<bool> RegisterUserAsync(RegisterDto dto);
+        Task<ApplicationUserDto> Login(LoginDto dto);
         Task<string> GetUserNameAsync(string userId);
         Task<string> GetUserEmailAsync(string userId);
-        Task<ApplicationUserDto> GetUserByIdAsync(string userId);
+        // Task<ApplicationUserDto> GetUserByIdAsync(string userId);
         Task<bool> IsUserInRoleAsync(string userId, string roleName);
         Task<IEnumerable<string>> GetUserRolesAsync(string userId);
         Task<bool> AddUserToRoleAsync(string userId, string roleName);
         Task<bool> RemoveUserFromRoleAsync(string userId, string roleName);
         Task<bool> CreateUserAsync(string userName, string email, string password);
         Task<bool> DeleteUserAsync(string userId);
-       // Task<bool> UpdateUserEmailAsync(string userId, string newEmail);
+        // Task<bool> UpdateUserEmailAsync(string userId, string newEmail);
     }
 }

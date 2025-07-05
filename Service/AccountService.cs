@@ -4,39 +4,55 @@ using Microsoft.AspNetCore.Identity;
 using Service.Abstraction;
 using Shared.DTO.Account;
 using Shared.DTO.ApplicationUser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<ApplicationUser> UserManager;
-        private readonly RoleManager<IdentityRole> RoleManager;
-
-        public AccountService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ITokenService _tokenService;
+        public AccountService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService)
         {
-            UserManager = userManager;
-            RoleManager = roleManager;
+            _userManager = userManager;
+            _tokenService = tokenService;
+            _roleManager = roleManager;
         }
+
         public async Task<bool> CreateRoleAsync(string roleName)
         {
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentException("Role name cannot be empty.");
 
-            var roleExists = await RoleManager.RoleExistsAsync(roleName);
+            var roleExists = await _roleManager.RoleExistsAsync(roleName);
             if (roleExists)
                 throw new RoleAlreadyExistsException(roleName);
 
-            var result = await RoleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
             if (result.Succeeded)
                 return true;
 
             var errors = result.Errors.Select(e => e.Description);
             throw new CreateRoleFailedException(errors);
+        }
+
+        public async Task<ApplicationUserDto> Login(LoginDto loginDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user == null)
+                throw new UserNotFoundException(loginDto.Email);
+
+            var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (!result)
+                throw new UserNotFoundException(loginDto.Email);
+
+            return new ApplicationUserDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Token = _tokenService.CreateToken(user),
+            };
         }
 
         public async Task<bool> RegisterUserAsync(RegisterDto dto)
@@ -50,20 +66,21 @@ namespace Service
                 CreatedAt = DateTime.UtcNow
             };
 
-            var result = await UserManager.CreateAsync(user, dto.Password);
+            var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
                 throw new CreateUserFailedException(result.Errors.Select(e => e.Description));
 
-            var roleExists = await RoleManager.RoleExistsAsync(dto.Role);
+            var roleExists = await _roleManager.RoleExistsAsync(dto.Role);
             if (!roleExists)
                 throw new RoleNotFoundException(dto.Role);
 
-            var roleResult = await UserManager.AddToRoleAsync(user, dto.Role);
+            var roleResult = await _userManager.AddToRoleAsync(user, dto.Role);
             if (!roleResult.Succeeded)
                 throw new AddUserToRoleFailedException(roleResult.Errors.Select(e => e.Description));
 
             return true;
         }
+
         public async Task<bool> AddUserToRoleAsync(string userId, string roleName)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(roleName))
@@ -71,11 +88,11 @@ namespace Service
 
             var user = await GetUserOrThrowAsync(userId);
 
-            var roleExists = await RoleManager.RoleExistsAsync(roleName);
+            var roleExists = await _roleManager.RoleExistsAsync(roleName);
             if (!roleExists)
                 throw new RoleNotFoundException(roleName);
 
-            var result = await UserManager.AddToRoleAsync(user, roleName);
+            var result = await _userManager.AddToRoleAsync(user, roleName);
             if (result.Succeeded)
                 return true;
 
@@ -91,7 +108,7 @@ namespace Service
                 Email = email
             };
 
-            var result = await UserManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
                 return true;
 
@@ -102,22 +119,20 @@ namespace Service
         public async Task<bool> DeleteUserAsync(string userId)
         {
             var user = await GetUserOrThrowAsync(userId);
-            var result = await UserManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
         }
 
-        public async Task<ApplicationUserDto> GetUserByIdAsync(string userId)
-        {
-            var user = await GetUserOrThrowAsync(userId);
-            return new ApplicationUserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                CreatedAt = user.CreatedAt
-            };
-        }
+        // public async Task<ApplicationUserDto> GetUserByIdAsync(string userId)
+        // {
+        //     var user = await GetUserOrThrowAsync(userId);
+        //     return new ApplicationUserDto
+        //     {
+        //         Email = user.Email,
+        //         FirstName = user.FirstName,
+        //         LastName = user.LastName,
+        //     };
+        // }
 
         public async Task<string> GetUserEmailAsync(string userId)
         {
@@ -134,23 +149,23 @@ namespace Service
         public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
         {
             var user = await GetUserOrThrowAsync(userId);
-            return await UserManager.GetRolesAsync(user);
+            return await _userManager.GetRolesAsync(user);
         }
 
         public async Task<bool> IsUserInRoleAsync(string userId, string roleName)
         {
             var user = await GetUserOrThrowAsync(userId);
-            return await UserManager.IsInRoleAsync(user, roleName);
+            return await _userManager.IsInRoleAsync(user, roleName);
         }
 
         public async Task<bool> RemoveUserFromRoleAsync(string userId, string roleName)
         {
             var user = await GetUserOrThrowAsync(userId);
 
-            if (!await UserManager.IsInRoleAsync(user, roleName))
+            if (!await _userManager.IsInRoleAsync(user, roleName))
                 throw new UserNotInRoleException(userId, roleName);
 
-            var result = await UserManager.RemoveFromRoleAsync(user, roleName);
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
             if (result.Succeeded)
                 return true;
 
@@ -159,7 +174,7 @@ namespace Service
 
         private async Task<ApplicationUser> GetUserOrThrowAsync(string userId)
         {
-            var user = await UserManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
             return user ?? throw new UserNotFoundException(userId);
         }
     }
