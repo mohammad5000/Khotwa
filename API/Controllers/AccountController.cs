@@ -28,7 +28,7 @@ namespace API.Controllers
                 return BadRequest(ModelState);
 
             await _accountService.RegisterUserAsync(dto);
-            return Ok("User registered successfully.");
+            return Created();
         }
         // Example method for user login
         [HttpPost("login")]
