@@ -13,6 +13,8 @@ namespace Infrastructure.persistence.Data
         public DbSet<TutorRequest> TutorRequests { get; set; }
         public DbSet<Demo> Demos { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+
 
 
 
