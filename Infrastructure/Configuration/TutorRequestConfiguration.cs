@@ -25,7 +25,17 @@ namespace Infrastructure.Configuration
                    .HasConversion<string>() 
                    .IsRequired();
 
-           
+            builder.HasOne(tr => tr.AcceptedProposal)
+                   .WithMany()
+                   .HasForeignKey(tr => tr.AcceptedProposalId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(tr => tr.Session)
+                   .WithMany()
+                   .HasForeignKey(tr => tr.SessionId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+
         }
     }
 }

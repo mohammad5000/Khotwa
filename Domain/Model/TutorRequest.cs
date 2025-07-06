@@ -29,6 +29,17 @@ namespace Domain.Model
         public decimal Budget { get; set; }
         [Required]
         public TutorStatus Status { get; set; } = TutorStatus.OpenForApply;
+        [ForeignKey("Proposal")]
+        public int? AcceptedProposalId { get; set; }
+        public virtual Proposal? AcceptedProposal { get; set; }
+        [ForeignKey("Session")]
+        public int? SessionId { get; set; }
+        public virtual Session? Session { get; set; }
+
+        public virtual ICollection<Proposal> ProposalList { get; set; } = new List<Proposal>();
+
+
+
         public virtual Category Category { get; set; }
         
         public virtual ApplicationUser Customer { get; set; }

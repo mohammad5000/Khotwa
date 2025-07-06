@@ -9,5 +9,7 @@ namespace Domain.Model
         [Required, MaxLength(50), MinLength(3)]
         public string Name { get; set; } = null!;
         public bool IsDeleted { get; set; } = false;
+
+        public ICollection<TutorRequest> TutorRequestList { get; set; } = new List<TutorRequest>();
     }
 }
