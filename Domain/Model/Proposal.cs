@@ -29,5 +29,8 @@ namespace Domain.Model
 
         public ApplicationUser Instructor { get; set; }
         public TutorRequest TutorRequest { get; set; }
+        public Demo? Demo { get; set; }
+        [ForeignKey("Demo")]
+        public int? DemoId { get; set; }
     }
 }

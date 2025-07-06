@@ -1,5 +1,6 @@
 ﻿using Domain.Enum;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model
 {
@@ -12,8 +13,10 @@ namespace Domain.Model
         public required string VideoUrl { get; set; }
         [Required]
         public DemoStatus Status { get; set; } = DemoStatus.Hold;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public Proposal Proposal { get; set; }
+        [ForeignKey("Proposal")]
+        public int ProposalId { get; set; }
 
     }
 }

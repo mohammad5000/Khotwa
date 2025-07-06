@@ -9,6 +9,7 @@ namespace Domain.Enum
     public enum DemoStatus
     {
         Hold,
-        Reviewed 
+        Reviewed,
+        Deleted
     }
 }
