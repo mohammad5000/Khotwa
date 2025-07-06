@@ -51,7 +51,7 @@ namespace Service
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
             };
         }
 

@@ -1,15 +1,25 @@
+using Domain.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Service.Abstraction;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Domain.Model;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Service;
 
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService : ITokenService
 {
-    public string CreateToken(ApplicationUser user)
+    private readonly IConfiguration config;
+    private readonly UserManager<ApplicationUser> userManager;
+
+    public TokenService(IConfiguration _config, UserManager<ApplicationUser> _userManager)
+    {
+        config = _config;
+        userManager = _userManager;
+    }
+    public async Task<string> CreateToken(ApplicationUser user)
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("TokenKey not found in configuration.");
 
@@ -22,9 +32,15 @@ public class TokenService(IConfiguration config) : ITokenService
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Name, user.UserName)
-        };
+            new(ClaimTypes.Name, user.FirstName+" "+user.LastName)
 
+        };
+        var roles = await userManager.GetRolesAsync(user);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
