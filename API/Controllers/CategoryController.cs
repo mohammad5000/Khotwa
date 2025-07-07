@@ -30,6 +30,12 @@ namespace API.Controllers
             return await _categoryService.GetCategoryByIdAsync(id);
         }
 
+        [HttpGet("{name}")]
+        public async Task<ActionResult<CategoryResponseDto?>> GetCategoryByNameAsync(string name)
+        {
+            return await _categoryService.GetCategoryByNameAsync(name);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(CreateCategoryRequestDto createCategoryRequestDto)
         {

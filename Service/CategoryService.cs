@@ -21,7 +21,7 @@ namespace Service
         {
             var cat = new Category
             {
-                Name = createCategoryRequestDto.CategoryName
+                Name = createCategoryRequestDto.CategoryName.ToLower(),
             };
             _repository.CreateCategory(cat);
             await _unitWork.SaveAsync();
@@ -51,6 +51,20 @@ namespace Service
         public async Task<CategoryResponseDto?> GetCategoryByIdAsync(int id)
         {
             var category = await _repository.GetCategoryByIdAsync(id);
+            if (category == null)
+                throw new CategoryNotFoundException("Category not found.");
+
+            var categoryResponseDto = new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            return categoryResponseDto;
+        }
+
+        public async Task<CategoryResponseDto?> GetCategoryByNameAsync(string name)
+        {
+            var category = await _repository.GetCategoryByNameAsync(name);
             if (category == null)
                 throw new CategoryNotFoundException("Category not found.");
 

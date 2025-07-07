@@ -26,5 +26,10 @@ namespace Infrastructure.persistence.Repository
         {
             return await _context.Categories.FindAsync(id);
         }
+
+        public Task<Category?> GetCategoryByNameAsync(string name)
+        {
+            return _context.Categories.FirstOrDefaultAsync(x => x.Name == name.ToLower());
+        }
     }
 }

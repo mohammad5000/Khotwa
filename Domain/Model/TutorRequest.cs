@@ -13,21 +13,24 @@ namespace Domain.Model
         [Required]
         [ForeignKey("Customer")]
         public required string CustomerId { get; set; }
-        
+
         [Required]
         public int CategoryID { get; set; }
-        
+
         [Required]
-        [MaxLength(50, ErrorMessage = "Title Should not be greater than 50 Characters"), 
-         MinLength(20, ErrorMessage = "Title Should not be less between 20 Characters")]
+        [MaxLength(50, ErrorMessage = "Title Should not be greater than 50 Characters"),
+        MinLength(20, ErrorMessage = "Title Should not be less between 20 Characters")]
         public required string Title { get; set; }
-        
+
         [Required]
         [MaxLength(150, ErrorMessage = "Title Should not be more between 150 Characters")]
         public required string Description { get; set; }
-        
+
         [Required]
-        public required int Duration { get; set; }
+        public required DateTime StartDateTime { get; set; } = DateTime.Now;
+
+        [Required]
+        public required DateTime EndDateTime { get; set; }
 
         [Required]
         public decimal MinBudget { get; set; } = 5.00m;
@@ -37,8 +40,8 @@ namespace Domain.Model
         public TutorStatus Status { get; set; } = TutorStatus.OpenForApply;
         [ForeignKey("Proposal")]
         public int? AcceptedProposalId { get; set; }
-        
-      
+
+
         public int? SessionID { get; set; }
 
 
