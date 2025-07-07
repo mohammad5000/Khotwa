@@ -2,6 +2,7 @@ using System.Text;
 using API.Middleware;
 using Domain.Interface;
 using Domain.Model;
+using Infrastructure.Helpers;
 using Infrastructure.persistence.Data;
 using Infrastructure.persistence.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,6 +36,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 }).AddEntityFrameworkStores<DataContext>();
+
+builder.Services.AddAutoMapper(opt =>
+{
+    opt.AddProfile(typeof(AutoMapperProfiles));
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
