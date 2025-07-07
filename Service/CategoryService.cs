@@ -23,7 +23,7 @@ namespace Service
                 Name = createCategoryDto.CategoryName
             };
             _repository.CreateCategory(cat);
-            
+            await _unitWork.SaveAsync();
         }
 
         // public async Task<CategoryDto> getCategoryById(int id)
