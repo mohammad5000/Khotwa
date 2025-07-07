@@ -1,17 +1,12 @@
 ﻿using Shared.DTO.Category;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Abstraction
 {
     public interface ICategoryService
     {
-        public Task CreateCategory(CategoryDto createCategory);
-        public Task<CategoryDto> getCategoryById(int id);
-        public void UpdateCategory(int id , CategoryDto updateCategory);
-        public void DeleteCategory(int id);
+        public Task CreateCategoryAsync(CreateCategoryDto createCategoryDto);
+        // public Task<CategoryDto> getCategoryById(int id);
+        // public void UpdateCategory(int id , CategoryDto updateCategory);
+        // public void DeleteCategory(int id);
     }
 }
