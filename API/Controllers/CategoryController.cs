@@ -31,7 +31,7 @@ namespace API.Controllers
         public async Task<ActionResult<CategoryDto>> Create(CategoryDto cat) {
 
             await _categoryService.CreateCategory(cat);
-            return CreatedAtAction("GetById");
+            return Created();
              
         }
     }

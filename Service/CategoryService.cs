@@ -9,9 +9,11 @@ namespace Service
 {
     public class CategoryService : ICategoryService
     {   private readonly ICategoryRepository _repository;
-        public CategoryService(ICategoryRepository repo)
+        private readonly IUnitWork _unitWork;
+        public CategoryService(ICategoryRepository repo, IUnitWork unitWork)
         {
             _repository = repo;
+            _unitWork = unitWork;
         }
         public async Task CreateCategory(CategoryDto createCategory)
         {
@@ -27,10 +29,7 @@ namespace Service
             };
 
             _repository.CreateCategory(cat);
-           await _repository.SaveAsync();
-
-            
-
+           await _unitWork.SaveAsync();
 
         }
         

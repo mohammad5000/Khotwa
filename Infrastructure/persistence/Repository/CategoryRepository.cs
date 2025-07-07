@@ -22,7 +22,6 @@ namespace Infrastructure.persistence.Repository
         public void DeleteCategory(int id) => throw new NotImplementedException();
         public Task<IEnumerable<Category>> GetAllCategoryAsync() => throw new NotImplementedException();
         public Task<Category> GetCategoryAsync(int id) => throw new NotImplementedException();
-        public async Task SaveAsync() => await _context.SaveChangesAsync();
         public void UpdateCategory(Category category) => throw new NotImplementedException();
     }
 }

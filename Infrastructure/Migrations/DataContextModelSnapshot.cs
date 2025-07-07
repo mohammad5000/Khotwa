@@ -424,7 +424,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ProposalId", "AvailableDateTime");
 
-                    b.ToTable("ProposalAvailableDate");
+                    b.ToTable("ProposalAvailableDates");
                 });
 
             modelBuilder.Entity("Domain.Model.Proposal", b =>

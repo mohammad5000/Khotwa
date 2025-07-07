@@ -9,7 +9,5 @@ namespace Domain.Interface
         public void CreateCategory(Category category);
         public void UpdateCategory(Category category);
         public void DeleteCategory(int id);
-
-        public Task SaveAsync();
     }
 }
