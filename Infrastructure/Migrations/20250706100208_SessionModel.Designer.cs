@@ -4,6 +4,7 @@ using Infrastructure.persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250706100208_SessionModel")]
+    partial class SessionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,9 +162,6 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DemoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("InstructorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -171,24 +171,18 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<decimal>("PriceOffered")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TutorRequestID")
+                    b.Property<int>("TutorRequestId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DemoId")
-                        .IsUnique();
-
                     b.HasIndex("InstructorId");
 
-                    b.HasIndex("TutorRequestID");
+                    b.HasIndex("TutorRequestId");
 
                     b.ToTable("Proposals");
                 });
@@ -228,10 +222,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AcceptedProposalId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerId")
@@ -246,15 +240,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MaxBudget")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("MinBudget")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("SessionID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -266,17 +251,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AcceptedProposalId")
-                        .IsUnique()
-                        .HasFilter("[AcceptedProposalId] IS NOT NULL");
-
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("SessionID")
-                        .IsUnique()
-                        .HasFilter("[SessionID] IS NOT NULL");
 
                     b.ToTable("TutorRequests");
                 });
@@ -414,56 +391,30 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ProposalAvailableDate", b =>
-                {
-                    b.Property<int>("ProposalId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AvailableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProposalId", "AvailableDateTime");
-
-                    b.ToTable("ProposalAvailableDate");
-                });
-
             modelBuilder.Entity("Domain.Model.Proposal", b =>
                 {
-                    b.HasOne("Domain.Model.Demo", "Demo")
-                        .WithOne("Proposal")
-                        .HasForeignKey("Domain.Model.Proposal", "DemoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Model.ApplicationUser", "Instructor")
                         .WithMany()
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.TutorRequest", "TutorRequestMany")
-                        .WithMany("ProposalList")
-                        .HasForeignKey("TutorRequestID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("Domain.Model.TutorRequest", "TutorRequest")
+                        .WithMany()
+                        .HasForeignKey("TutorRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Demo");
 
                     b.Navigation("Instructor");
 
-                    b.Navigation("TutorRequestMany");
+                    b.Navigation("TutorRequest");
                 });
 
             modelBuilder.Entity("Domain.Model.TutorRequest", b =>
                 {
-                    b.HasOne("Domain.Model.Proposal", "AcceptedProposal")
-                        .WithOne("TutorRequest")
-                        .HasForeignKey("Domain.Model.TutorRequest", "AcceptedProposalId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Domain.Model.Category", "Category")
-                        .WithMany("TutorRequestList")
-                        .HasForeignKey("CategoryID")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -473,18 +424,9 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.Session", "Session")
-                        .WithOne("TutorRequest")
-                        .HasForeignKey("Domain.Model.TutorRequest", "SessionID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AcceptedProposal");
-
                     b.Navigation("Category");
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -536,44 +478,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProposalAvailableDate", b =>
-                {
-                    b.HasOne("Domain.Model.Proposal", "Proposal")
-                        .WithMany("ListOfAvaliableDateTime")
-                        .HasForeignKey("ProposalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Proposal");
-                });
-
-            modelBuilder.Entity("Domain.Model.Category", b =>
-                {
-                    b.Navigation("TutorRequestList");
-                });
-
-            modelBuilder.Entity("Domain.Model.Demo", b =>
-                {
-                    b.Navigation("Proposal");
-                });
-
-            modelBuilder.Entity("Domain.Model.Proposal", b =>
-                {
-                    b.Navigation("ListOfAvaliableDateTime");
-
-                    b.Navigation("TutorRequest");
-                });
-
-            modelBuilder.Entity("Domain.Model.Session", b =>
-                {
-                    b.Navigation("TutorRequest");
-                });
-
-            modelBuilder.Entity("Domain.Model.TutorRequest", b =>
-                {
-                    b.Navigation("ProposalList");
                 });
 #pragma warning restore 612, 618
         }

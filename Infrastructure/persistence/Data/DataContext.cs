@@ -3,12 +3,20 @@ using Domain.Model;
 using Infrastructure.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Infrastructure.persistence.Data
 {
     public class DataContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Category> Categories { get; set; }
+        public DbSet<TutorRequest> TutorRequests { get; set; }
+        public DbSet<Demo> Demos { get; set; }
+        public DbSet<Proposal> Proposals { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+
+
+
 
         public DataContext(DbContextOptions options) : base(options)
         {
@@ -18,7 +26,7 @@ namespace Infrastructure.persistence.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(CategoryConfigurations).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
             
     }

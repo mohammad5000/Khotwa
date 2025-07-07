@@ -17,12 +17,21 @@ namespace API.Controllers
             _categoryService = cat;
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CategoryDto>> GetById(int id)
+        {
+           var catdto =  await _categoryService.getCategoryById(id);
+
+           return Ok(catdto);
+
+        }
+
 
         [HttpPost("create")]
         public async Task<ActionResult<CategoryDto>> Create(CategoryDto cat) {
 
             await _categoryService.CreateCategory(cat);
-            return cat;
+            return CreatedAtAction("GetById");
              
         }
     }

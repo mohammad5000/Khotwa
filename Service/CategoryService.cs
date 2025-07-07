@@ -29,10 +29,27 @@ namespace Service
             _repository.CreateCategory(cat);
            await _repository.SaveAsync();
 
+            
+
 
         }
         
         public void DeleteCategory(int id) => throw new NotImplementedException();
+
+        public async Task<CategoryDto> getCategoryById(int id) {
+
+            var cat = await _repository.GetCategoryAsync(id);
+            if (cat == null)
+            {
+                throw new CategoryNotFoundException($"Cat id: {id} not found");
+            }
+            var catdto = new CategoryDto
+            {
+                Name = cat.Name
+            };
+
+            return catdto;
+        }
         public void UpdateCategory(int id, CategoryDto updateCategory) => throw new NotImplementedException();
     }
 }

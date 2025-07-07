@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
-    public class CategoryConfigurations : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder) 
         {
