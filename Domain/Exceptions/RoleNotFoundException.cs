@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class CategoryNotFoundException : NotFoundException
+    public class RoleNotFoundException : NotFoundException
     {
-        public CategoryNotFoundException(string message) : base(message)
-        {
-        }
-      
+        public RoleNotFoundException(string roleName)
+            : base($"Role '{roleName}' was not found.") { }
     }
 }

@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class CategoryNotFoundException : NotFoundException
+    public class UserNotFoundException : NotFoundException
     {
-        public CategoryNotFoundException(string message) : base(message)
-        {
-        }
-      
+        public UserNotFoundException(string userId)
+            : base($"User with ID '{userId}' was not found.") { }
     }
 }

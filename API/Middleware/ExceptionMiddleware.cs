@@ -1,5 +1,5 @@
 using Domain.ErrorModel;
-using Domain.Exceptions;
+using Domain.Exceptions.Base;
 
 namespace API.Middleware;
 
@@ -18,12 +18,14 @@ public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddlew
             context.Response.StatusCode = ex switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
+                BadRequestException => StatusCodes.Status400BadRequest,
+                ConflictException => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError
             };
 
             var errorDetail = _env.IsDevelopment()
                 ? new ErrorDetail(ex.Message, context.Response.StatusCode, ex.StackTrace)
-                : new ErrorDetail(ex.Message, context.Response.StatusCode, "Internal Server Error");
+                : new ErrorDetail("An unexpected error occurred.", context.Response.StatusCode, null);
             await context.Response.WriteAsJsonAsync(errorDetail);
         }
     }

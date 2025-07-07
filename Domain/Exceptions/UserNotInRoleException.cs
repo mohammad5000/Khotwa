@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class CategoryNotFoundException : NotFoundException
+    public class UserNotInRoleException : BadRequestException
     {
-        public CategoryNotFoundException(string message) : base(message)
+        public UserNotInRoleException(string userId, string roleName)
+            : base($"User with ID '{userId}' is not in role '{roleName}'.")
         {
         }
-      
     }
 }

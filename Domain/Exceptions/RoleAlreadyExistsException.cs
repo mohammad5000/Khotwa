@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class CategoryNotFoundException : NotFoundException
+    public class RoleAlreadyExistsException : ConflictException
     {
-        public CategoryNotFoundException(string message) : base(message)
-        {
-        }
-      
+        public RoleAlreadyExistsException(string roleName)
+            : base($"Role '{roleName}' already exists.") { }
     }
 }
