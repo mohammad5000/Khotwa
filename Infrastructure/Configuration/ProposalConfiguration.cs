@@ -13,9 +13,18 @@ namespace Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<Proposal> builder)
         {
+            builder.Property(p => p.PriceOffered).HasColumnType("decimal(18,2)");
+
             builder.Property(d => d.Status)
                    .HasConversion<string>()
                    .IsRequired();
+
+         
+
+
+
+
+
         }
     }
 }

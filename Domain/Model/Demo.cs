@@ -14,9 +14,8 @@ namespace Domain.Model
         [Required]
         public DemoStatus Status { get; set; } = DemoStatus.Hold;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public Proposal Proposal { get; set; }
-        [ForeignKey("Proposal")]
-        public int ProposalId { get; set; }
+        public virtual Proposal? Proposal { get; set; }
+        
 
     }
 }

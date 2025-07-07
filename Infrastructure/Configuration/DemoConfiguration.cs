@@ -14,7 +14,7 @@ namespace Infrastructure.Configuration
                    .HasConversion<string>() 
                    .IsRequired();
 
-           
+
         }
     }
 }

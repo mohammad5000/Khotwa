@@ -18,7 +18,8 @@ namespace Domain.Model
         public DateTime ScheduleTime { get; set; }
         public string? RecordingUrl { get; set; }
         public SessionStatus Status { get; set; } = SessionStatus.Scheduled;
-
+        
+        public virtual TutorRequest? TutorRequest { get; set; }
 
     }
 }

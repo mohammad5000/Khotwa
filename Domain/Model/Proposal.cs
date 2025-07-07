@@ -14,23 +14,30 @@ namespace Domain.Model
         [Key]
         public int Id { get; set; }
         [Required]
-        [ForeignKey("TutorRequest")]
-        public int TutorRequestId { get; set; }
+        
+        public int TutorRequestID { get; set; }
 
         [Required]
         [ForeignKey("Instructor")]
         public string InstructorId { get; set; }
 
+        [ForeignKey("Demo")]
+        public int DemoId { get; set; }
+
         [Required]
         [MaxLength(150, ErrorMessage = "Title Should not be greater than 150 Characters")]
         public required string Message { get; set; }
 
-        public ProposalStatus Status { get; set; } = ProposalStatus.Submited;
+        [Required]
+        public decimal PriceOffered { get; set; }
 
-        public ApplicationUser Instructor { get; set; }
-        public TutorRequest TutorRequest { get; set; }
-        public Demo? Demo { get; set; }
-        [ForeignKey("Demo")]
-        public int? DemoId { get; set; }
+        public ICollection<ProposalAvailableDate> ListOfAvaliableDateTime { get; set; } = new List<ProposalAvailableDate>();
+        public ProposalStatus Status { get; set; } = ProposalStatus.Submited;
+        public virtual ApplicationUser? Instructor { get; set; }
+        public virtual TutorRequest? TutorRequest { get; set; }
+        public virtual TutorRequest? TutorRequestMany { get; set; }
+
+        public virtual Demo? Demo { get; set; }
+        
     }
 }
