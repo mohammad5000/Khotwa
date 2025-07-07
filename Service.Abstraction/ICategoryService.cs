@@ -4,9 +4,8 @@ namespace Service.Abstraction
 {
     public interface ICategoryService
     {
-        public Task CreateCategoryAsync(CreateCategoryDto createCategoryDto);
-        // public Task<CategoryDto> getCategoryById(int id);
-        // public void UpdateCategory(int id , CategoryDto updateCategory);
-        // public void DeleteCategory(int id);
+        public Task CreateCategoryAsync(CreateCategoryRequestDto createCategoryDto);
+        public Task<IEnumerable<CategoryResponseDto>> GetAllCategoryAsync();
+        public Task<CategoryResponseDto?> GetCategoryByIdAsync(int id);
     }
 }

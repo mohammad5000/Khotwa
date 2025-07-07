@@ -17,22 +17,25 @@ namespace API.Controllers
             _categoryService = cat;
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<CategoryDto>> GetById(int id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CategoryResponseDto>>> GetAllCategoryAsync()
         {
-           var catdto =  await _categoryService.getCategoryById(id);
-
-           return Ok(catdto);
-
+            var categories = await _categoryService.GetAllCategoryAsync();
+            return Ok(categories);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CategoryResponseDto?>> GetCategoryByIdAsync(int id)
+        {
+            return await _categoryService.GetCategoryByIdAsync(id);
+        }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<CategoryDto>> Create(CategoryDto cat) {
+        [HttpPost]
+        public async Task<ActionResult> Create(CreateCategoryRequestDto createCategoryRequestDto)
+        {
+            await _categoryService.CreateCategoryAsync(createCategoryRequestDto);
 
-            await _categoryService.CreateCategory(cat);
             return Created();
-             
         }
     }
 }

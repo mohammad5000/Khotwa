@@ -1,6 +1,7 @@
 ﻿using Domain.Interface;
 using Domain.Model;
 using Infrastructure.persistence.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.persistence.Repository
 {
@@ -15,9 +16,15 @@ namespace Infrastructure.persistence.Repository
         {
             _context.Categories.Add(category);
         }
-        public void DeleteCategory(int id) => throw new NotImplementedException();
-        public Task<IEnumerable<Category>> GetAllCategoryAsync() => throw new NotImplementedException();
-        public Task<Category> GetCategoryAsync(int id) => throw new NotImplementedException();
-        public void UpdateCategory(Category category) => throw new NotImplementedException();
+
+        public async Task<IEnumerable<Category>> GetAllCategoryAsync()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
     }
 }

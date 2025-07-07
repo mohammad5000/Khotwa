@@ -1,4 +1,5 @@
-﻿using Domain.Interface;
+﻿using Domain.Exceptions;
+using Domain.Interface;
 using Domain.Model;
 using Service.Abstraction;
 using Shared.DTO.Category;
@@ -16,34 +17,49 @@ namespace Service
             _unitWork = unitOfWork;
         }
 
-        public async Task CreateCategoryAsync(CreateCategoryDto createCategoryDto)
+        public async Task CreateCategoryAsync(CreateCategoryRequestDto createCategoryRequestDto)
         {
             var cat = new Category
             {
-                Name = createCategoryDto.CategoryName
+                Name = createCategoryRequestDto.CategoryName
             };
             _repository.CreateCategory(cat);
             await _unitWork.SaveAsync();
         }
 
-        // public async Task<CategoryDto> getCategoryById(int id)
-        // {
+        public async Task<IEnumerable<CategoryResponseDto>> GetAllCategoryAsync()
+        {
+            var categories = await _repository.GetAllCategoryAsync();
 
-        //     var cat = await _repository.GetCategoryAsync(id);
-        //     if (cat == null)
-        //     {
-        //         throw new CategoryNotFoundException($"Cat id: {id} not found");
-        //     }
-        //     var catdto = new CategoryDto
-        //     {
-        //         Name = cat.Name
-        //     };
+            if (categories == null)
+                throw new CategoryNotFoundException("Categories not found.");
 
-        //     return catdto;
-        // }
+            var categoryResponseDtos = new List<CategoryResponseDto>();
 
-        // public void DeleteCategory(int id) => throw new NotImplementedException();
+            foreach (var category in categories)
+            {
+                categoryResponseDtos.Add(new CategoryResponseDto
+                {
+                    Id = category.Id,
+                    Name = category.Name
+                });
+            }
 
-        // public void UpdateCategory(int id, CategoryDto updateCategory) => throw new NotImplementedException();
+            return categoryResponseDtos;
+        }
+
+        public async Task<CategoryResponseDto?> GetCategoryByIdAsync(int id)
+        {
+            var category = await _repository.GetCategoryByIdAsync(id);
+            if (category == null)
+                throw new CategoryNotFoundException("Category not found.");
+
+            var categoryResponseDto = new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            return categoryResponseDto;
+        }
     }
 }

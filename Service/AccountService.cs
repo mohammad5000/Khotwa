@@ -123,19 +123,19 @@ namespace Service
             return result.Succeeded;
         }
         
-        public async Task<ApplicationUserDto> GetUserByIdAsync(string userId)
-        {
-            var user = await UserManager.FindByIdAsync(userId);
-            if (user == null)
-                throw new UserNotFoundException(userId);
+        //public async Task<ApplicationUserDto> GetUserByIdAsync(string userId)
+        //{
+        //    var user = await UserManager.FindByIdAsync(userId);
+        //    if (user == null)
+        //        throw new UserNotFoundException(userId);
 
-            return new ApplicationUserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                //UserName = user.UserName
-            };
-        }
+        //    return new ApplicationUserDto
+        //    {
+        //        Id = user.Id,
+        //        Email = user.Email,
+        //        //UserName = user.UserName
+        //    };
+        //}
 
         // public async Task<ApplicationUserDto> GetUserByIdAsync(string userId)
         // {
