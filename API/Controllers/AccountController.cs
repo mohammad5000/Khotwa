@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using Service;
+using Service.Abstraction;
 using Shared.DTO.Account;
+using Shared.DTO.ApplicationUser;
 
 namespace API.Controllers
 {
@@ -9,22 +12,29 @@ namespace API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        readonly IAccountService _accountService;
+
         // This controller will handle user account operations such as registration, login, and profile management.
         // Currently, it is empty and can be filled with methods for handling user accounts.
-        
-        // Example method for user registration
-        [HttpPost("register")]
-        public IActionResult Register(RegisterDto userDto)
+
+        public AccountController(IAccountService accountService)
         {
-            // Logic for registering a new user
-            return Ok("User registered successfully.");
+            _accountService = accountService;
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _accountService.RegisterUserAsync(dto);
+            return Created();
         }
         // Example method for user login
         [HttpPost("login")]
-        public IActionResult Login([FromBody] object loginDto)
+        public async Task<ActionResult<ApplicationUserDto>> Login(LoginDto loginDto)
         {
-            // Logic for user login
-            return Ok("User logged in successfully.");
+            return await _accountService.Login(loginDto);
         }
     }
 }
