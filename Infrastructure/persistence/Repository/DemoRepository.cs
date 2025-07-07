@@ -34,16 +34,12 @@ namespace Infrastructure.persistence.Repository
             _context.Demos.Update(demo);
         }
 
-        public void DeleteDemo(int id)
+        public async Task DeleteDemo(int id)
         {
-            var demo = _context.Demos.Find(id);
+            var demo = await GetDemoAsync(id);
             if (demo != null)
-                _context.Demos.Remove(demo);
+            _context.Demos.Remove(demo);
         }
 
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
     }
 }

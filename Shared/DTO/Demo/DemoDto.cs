@@ -13,7 +13,6 @@ namespace Shared.DTO.Demo
         [Required]
         [MaxLength(128, ErrorMessage = "URL Limit Exceeded")]
         public required string VideoUrl { get; set; }
-        [Required]
-        public required int ProposalId { get; set; }
+        
     }
 }

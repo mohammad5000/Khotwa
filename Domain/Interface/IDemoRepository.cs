@@ -12,8 +12,7 @@ namespace Domain.Interface
         public Task<Demo> GetDemoAsync(int id);
         public void CreateDemo(Demo demo);
         public void UpdateDemo(Demo demo);
-        public void DeleteDemo(int id);
+        public Task DeleteDemo(int id);
 
-        public Task SaveAsync();
     }
 }

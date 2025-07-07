@@ -8,5 +8,6 @@ namespace Domain.Interface
 {
     public interface IUnitWork
     {
+        public Task<int> SaveAsync();
     }
 }

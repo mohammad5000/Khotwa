@@ -14,6 +14,7 @@ namespace Infrastructure.persistence.Data
         public DbSet<Demo> Demos { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<ProposalAvailableDate> ProposalAvailableDates { get; set; }
 
 
 
