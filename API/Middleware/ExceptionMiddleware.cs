@@ -25,7 +25,7 @@ public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddlew
 
             var errorDetail = _env.IsDevelopment()
                 ? new ErrorDetail(ex.Message, context.Response.StatusCode, ex.StackTrace)
-                : new ErrorDetail("An unexpected error occurred.", context.Response.StatusCode, null);
+                : new ErrorDetail(ex.Message, context.Response.StatusCode, null);
             await context.Response.WriteAsJsonAsync(errorDetail);
         }
     }

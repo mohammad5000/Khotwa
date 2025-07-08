@@ -21,6 +21,12 @@ public class TutorRequestService : ITutorRequestService
 
     public async Task CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
     {
+        if (createTutorRequestDto.MinBudget > createTutorRequestDto.MaxBudget)
+            throw new TutorRequestBadRequest("Minimum budget cannot be greater than maximum budget.");
+
+        if (createTutorRequestDto.StartDateTime >= createTutorRequestDto.EndDateTime)
+            throw new TutorRequestBadRequest("End time must be after start time.");
+
         var Category = await _categoryService.GetCategoryByNameAsync(createTutorRequestDto.CategoryName);
 
         if (Category == null) throw new CategoryNotFoundException("Category not found.");
