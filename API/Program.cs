@@ -39,7 +39,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddAutoMapper(opt =>
 {
-    opt.AddProfile(typeof(AutoMapperProfiles));
+    opt.AddProfile<AutoMapperProfiles>();
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

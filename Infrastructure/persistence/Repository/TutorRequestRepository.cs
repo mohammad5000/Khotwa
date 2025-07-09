@@ -26,6 +26,6 @@ public class TutorRequestRepository : ITutorRequestRepository
 
     public async Task<TutorRequest?> GetTutorRequestByIdAsync(int id)
     {
-        return await _context.TutorRequests.FindAsync(id);
+        return await _context.TutorRequests.Include(x => x.Category).Include(x => x.Customer).SingleOrDefaultAsync(x => x.Id == id);
     }
 }

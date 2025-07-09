@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions;
+﻿using AutoMapper;
+using Domain.Exceptions;
 using Domain.Interface;
 using Domain.Model;
 using Service.Abstraction;
@@ -11,14 +12,19 @@ namespace Service
     {
         private readonly ICategoryRepository _repository;
         private readonly IUnitWork _unitWork;
-        public CategoryService(ICategoryRepository repo, IUnitWork unitOfWork)
+        private readonly IMapper _mapper;
+        public CategoryService(ICategoryRepository repo, IUnitWork unitOfWork, IMapper mapper)
         {
             _repository = repo;
             _unitWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task CreateCategoryAsync(CreateCategoryRequestDto createCategoryRequestDto)
         {
+            var category = await _repository.GetCategoryByNameAsync(createCategoryRequestDto.CategoryName.ToLower());
+            if (category != null)
+                throw new CategoryBadRequestException("Category already exists.");
             var cat = new Category
             {
                 Name = createCategoryRequestDto.CategoryName.ToLower(),
@@ -34,16 +40,7 @@ namespace Service
             if (categories == null)
                 throw new CategoryNotFoundException("Categories not found.");
 
-            var categoryResponseDtos = new List<CategoryResponseDto>();
-
-            foreach (var category in categories)
-            {
-                categoryResponseDtos.Add(new CategoryResponseDto
-                {
-                    Id = category.Id,
-                    Name = category.Name
-                });
-            }
+            var categoryResponseDtos = _mapper.Map<IEnumerable<CategoryResponseDto>>(categories).ToList();
 
             return categoryResponseDtos;
         }
@@ -54,11 +51,7 @@ namespace Service
             if (category == null)
                 throw new CategoryNotFoundException("Category not found.");
 
-            var categoryResponseDto = new CategoryResponseDto
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            var categoryResponseDto = _mapper.Map<CategoryResponseDto>(category);
             return categoryResponseDto;
         }
 
@@ -68,11 +61,7 @@ namespace Service
             if (category == null)
                 throw new CategoryNotFoundException("Category not found.");
 
-            var categoryResponseDto = new CategoryResponseDto
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            var categoryResponseDto = _mapper.Map<CategoryResponseDto>(category);
             return categoryResponseDto;
         }
     }
