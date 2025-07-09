@@ -16,7 +16,7 @@ public class CreateTutorRequestDto
     [MaxLength(150, ErrorMessage = "Title Should not be more between 150 Characters")]
     public required string Description { get; set; }
     [Required(ErrorMessage = "Start time is required")]
-    public required DateTime StartDateTime { get; set; } = DateTime.Now;
+    public required DateTime StartDateTime { get; set; } = DateTime.UtcNow;
     [Required(ErrorMessage = "End time is required")]
     public required DateTime EndDateTime { get; set; }
     [Required(ErrorMessage = "Minimum budget is required")]

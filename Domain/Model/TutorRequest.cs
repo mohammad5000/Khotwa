@@ -27,7 +27,7 @@ namespace Domain.Model
         public required string Description { get; set; }
 
         [Required]
-        public required DateTime StartDateTime { get; set; } = DateTime.Now;
+        public required DateTime StartDateTime { get; set; } = DateTime.UtcNow;
 
         [Required]
         public required DateTime EndDateTime { get; set; }
@@ -38,6 +38,8 @@ namespace Domain.Model
         public decimal MaxBudget { get; set; }
         [Required]
         public TutorStatus Status { get; set; } = TutorStatus.OpenForApply;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         [ForeignKey("Proposal")]
         public int? AcceptedProposalId { get; set; }
 
