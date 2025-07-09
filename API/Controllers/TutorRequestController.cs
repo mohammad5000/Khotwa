@@ -24,17 +24,17 @@ namespace API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TutorRequestResponseDto?>> GetTutorRequestByIdAsync(int id)
+        public async Task<ActionResult<TutorRequestResponseDto?>> GetById(int id)
         {
             var tutorRequest = await _tutorRequestService.GetTutorRequestByIdAsync(id);
             return Ok(tutorRequest);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
+        public async Task<ActionResult> CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
         {
-            await _tutorRequestService.CreateTutorRequestAsync(createTutorRequestDto);
-            return CreatedAtAction(nameof(GetTutorRequestByIdAsync), createTutorRequestDto);
+            var tutorRequest = await _tutorRequestService.CreateTutorRequestAsync(createTutorRequestDto);
+            return Created();
         }
     }
 }

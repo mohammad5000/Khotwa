@@ -22,7 +22,7 @@ public class TutorRequestService : ITutorRequestService
         _mapper = mapper;
     }
 
-    public async Task CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
+    public async Task<TutorRequestResponseDto> CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
     {
         if (createTutorRequestDto.MinBudget > createTutorRequestDto.MaxBudget)
             throw new TutorRequestBadRequest("Minimum budget cannot be greater than maximum budget.");
@@ -37,6 +37,10 @@ public class TutorRequestService : ITutorRequestService
 
         _tutorRequestRepository.CreateTutorRequest(tutorRequest);
         await _unitWork.SaveAsync();
+
+        var tutorRequestDto = _mapper.Map<TutorRequestResponseDto>(tutorRequest);
+
+        return tutorRequestDto;
     }
 
     public async Task<IEnumerable<TutorRequestResponseDto>> GetAllTutorRequestAsync()
