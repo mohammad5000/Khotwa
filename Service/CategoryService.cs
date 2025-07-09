@@ -64,5 +64,14 @@ namespace Service
             var categoryResponseDto = _mapper.Map<CategoryResponseDto>(category);
             return categoryResponseDto;
         }
+
+        public async Task<bool> CheckCategoryExistsAsync(int id)
+        {
+            return await _repository.CheckCategoryExistsAsync(id);
+        }
+        public async Task<bool> CheckCategoryExistsAsync(string name)
+        {
+            return await _repository.CheckCategoryExistsAsync(name);
+        }
     }
 }

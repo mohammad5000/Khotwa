@@ -31,13 +31,10 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
+        public async Task<IActionResult> CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             await _tutorRequestService.CreateTutorRequestAsync(createTutorRequestDto);
-            return Created();
+            return CreatedAtAction(nameof(GetTutorRequestByIdAsync), createTutorRequestDto);
         }
     }
 }

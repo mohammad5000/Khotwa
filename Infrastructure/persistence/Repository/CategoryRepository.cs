@@ -12,6 +12,17 @@ namespace Infrastructure.persistence.Repository
         {
             _context = context;
         }
+
+        public Task<bool> CheckCategoryExistsAsync(int id)
+        {
+            return _context.Categories.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<bool> CheckCategoryExistsAsync(string name)
+        {
+            return await _context.Categories.AnyAsync(x => x.Name == name.ToLower());
+        }
+
         public void CreateCategory(Category category)
         {
             _context.Categories.Add(category);

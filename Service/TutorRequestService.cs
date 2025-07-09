@@ -1,3 +1,4 @@
+using AutoMapper;
 using Domain.Exceptions;
 using Domain.Interface;
 using Domain.Model;
@@ -10,13 +11,15 @@ public class TutorRequestService : ITutorRequestService
 {
     private readonly ITutorRequestRepository _tutorRequestRepository;
     private readonly ICategoryService _categoryService;
+    private readonly IMapper _mapper;
     private readonly IUnitWork _unitWork;
 
-    public TutorRequestService(ITutorRequestRepository tutorRequestRepository, ICategoryService categoryService, IUnitWork unitWork)
+    public TutorRequestService(ITutorRequestRepository tutorRequestRepository, ICategoryService categoryService, IUnitWork unitWork, IMapper mapper)
     {
         _tutorRequestRepository = tutorRequestRepository;
         _categoryService = categoryService;
         _unitWork = unitWork;
+        _mapper = mapper;
     }
 
     public async Task CreateTutorRequestAsync(CreateTutorRequestDto createTutorRequestDto)
@@ -27,21 +30,10 @@ public class TutorRequestService : ITutorRequestService
         if (createTutorRequestDto.StartDateTime >= createTutorRequestDto.EndDateTime)
             throw new TutorRequestBadRequest("End time must be after start time.");
 
-        var Category = await _categoryService.GetCategoryByNameAsync(createTutorRequestDto.CategoryName);
+        var result = await _categoryService.CheckCategoryExistsAsync(createTutorRequestDto.CategoryId)
+            ? true : throw new CategoryNotFoundException("Category not found.");
 
-        if (Category == null) throw new CategoryNotFoundException("Category not found.");
-
-        var tutorRequest = new TutorRequest
-        {
-            Title = createTutorRequestDto.Title,
-            Description = createTutorRequestDto.Description,
-            StartDateTime = createTutorRequestDto.StartDateTime,
-            EndDateTime = createTutorRequestDto.EndDateTime,
-            MinBudget = createTutorRequestDto.MinBudget,
-            MaxBudget = createTutorRequestDto.MaxBudget,
-            CustomerId = createTutorRequestDto.CustomerId,
-            CategoryID = Category.Id,
-        };
+        var tutorRequest = _mapper.Map<TutorRequest>(createTutorRequestDto);
 
         _tutorRequestRepository.CreateTutorRequest(tutorRequest);
         await _unitWork.SaveAsync();
@@ -50,24 +42,8 @@ public class TutorRequestService : ITutorRequestService
     public async Task<IEnumerable<TutorRequestResponseDto>> GetAllTutorRequestAsync()
     {
         var tutorRequests = await _tutorRequestRepository.GetAllTutorRequestsAsync();
-        var tutorRequestDtos = new List<TutorRequestResponseDto>();
 
-        foreach (var tutorRequest in tutorRequests)
-        {
-            tutorRequestDtos.Add(new TutorRequestResponseDto
-            {
-                Id = tutorRequest.Id,
-                Title = tutorRequest.Title,
-                Description = tutorRequest.Description,
-                StartDateTime = tutorRequest.StartDateTime,
-                EndDateTime = tutorRequest.EndDateTime,
-                MinBudget = tutorRequest.MinBudget,
-                MaxBudget = tutorRequest.MaxBudget,
-                Status = tutorRequest.Status,
-                CategoryName = tutorRequest.Category?.Name ?? "Unknown",
-                CustomerName = tutorRequest.Customer?.FirstName + " " + tutorRequest.Customer?.LastName ?? "Unknown"
-            });
-        }
+        var tutorRequestDtos = _mapper.Map<IEnumerable<TutorRequestResponseDto>>(tutorRequests);
 
         if (tutorRequestDtos == null) throw new TutorRequestNotFoundException("Tutor requests not found.");
 
@@ -80,18 +56,6 @@ public class TutorRequestService : ITutorRequestService
 
         if (tutorRequest == null) throw new TutorRequestNotFoundException("Tutor request not found.");
 
-        return new TutorRequestResponseDto
-        {
-            Id = tutorRequest.Id,
-            Title = tutorRequest.Title,
-            Description = tutorRequest.Description,
-            StartDateTime = tutorRequest.StartDateTime,
-            EndDateTime = tutorRequest.EndDateTime,
-            MinBudget = tutorRequest.MinBudget,
-            MaxBudget = tutorRequest.MaxBudget,
-            Status = tutorRequest.Status,
-            CategoryName = tutorRequest.Category?.Name ?? "Unknown",
-            CustomerName = tutorRequest.Customer?.FirstName + " " + tutorRequest.Customer?.LastName ?? "Unknown"
-        };
+        return _mapper.Map<TutorRequestResponseDto>(tutorRequest);
     }
 }

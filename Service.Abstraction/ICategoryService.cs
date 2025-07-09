@@ -8,5 +8,7 @@ namespace Service.Abstraction
         public Task<IEnumerable<CategoryResponseDto>> GetAllCategoryAsync();
         public Task<CategoryResponseDto?> GetCategoryByIdAsync(int id);
         public Task<CategoryResponseDto?> GetCategoryByNameAsync(string name);
+        public Task<bool> CheckCategoryExistsAsync(string name);
+        public Task<bool> CheckCategoryExistsAsync(int id);
     }
 }
